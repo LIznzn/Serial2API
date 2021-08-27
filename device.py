@@ -28,21 +28,23 @@ class Device(object):
                       timeout=float(conf['timeout']))
         port.flush()
         self._port = port
-        self.test()
+        # self.test()
 
     # 原生发送带线程锁
     def send(self, data):
         port = self._port
         self._lock.acquire()
         port.write(data)
-        rec = port.readline()
+        # rec = port.readline()
+        rec = port.read_until(expected=LF)
         self._lock.release()
         return rec
 
     # 自动加入协议头版本号+token
     def send_msg(self, data):
         token = self.random_token()
-        data = bytes.fromhex('01') + token + data
+        data = bytes.fromhex('01') + token + data + bytes('\n', 'utf-8')
+        print(data)
         rec = self.send(data)
         if rec:  # 判断返回是否为空
             print(rec)
