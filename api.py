@@ -30,19 +30,23 @@ def post_send():
     device = Device(conf=None)
     if raw_length > max_length:
         fragment = True
+        fragment_order = 0
         while fragment:
             frag = data[0:max_length]
             data = data[max_length:]
-            str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + frag
+            str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
             result = device.send_msg(str0)
             if result is not True:
                 break
             if len(data) <= max_length:
                 fragment = False
-                str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + data
+                str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + fragment_order.to_bytes(length=2, byteorder='big') + data
                 result = device.send_msg(str0)
                 if result is not True:
                     break
+            print(fragment_order)
+            fragment_order = fragment_order + 1
+
     else:
         str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + data
         result = device.send_msg(str0)
@@ -58,6 +62,7 @@ def post_send_img():
     get_data = request.files['file'].read()
     result = None
     data = base64.b64encode(get_data)
+    print(data)
     #data = get_data
     raw_length = len(data)
     if raw_length > 65535:
@@ -66,19 +71,23 @@ def post_send_img():
     device = Device(conf=None)
     if raw_length > max_length:
         fragment = True
+        fragment_order = 0
         while fragment:
             frag = data[0:max_length]
             data = data[max_length:]
-            str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + frag
+            str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
             result = device.send_msg(str0)
             if result is not True:
                 break
             if len(data) <= max_length:
                 fragment = False
-                str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + data
+                str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + fragment_order.to_bytes(length=2, byteorder='big') + data
                 result = device.send_msg(str0)
                 if result is not True:
                     break
+            print(fragment_order)
+            fragment_order = fragment_order + 1
+
     else:
         str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + data
         result = device.send_msg(str0)

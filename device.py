@@ -36,31 +36,36 @@ class Device(object):
         self._lock.acquire()
         port.write(data)
         # rec = port.readline()
-        rec = port.read_until(expected=LF)
+        rec = port.read_until(expected=bytes.fromhex('FBFBFB'))
         self._lock.release()
         return rec
 
     # 自动加入协议头版本号+token
     def send_msg(self, data):
         token = self.random_token()
-        data = bytes.fromhex('01') + token + data + bytes('\n', 'utf-8')
+        data = bytes.fromhex('01') + token + data + bytes.fromhex('FBFBFB')
         print(data)
-        rec = self.send(data)
-        if rec:  # 判断返回是否为空
-            print(rec)
-            if rec[1:3] == token:  # 判断token是否一致
-                if rec[3:4] == bytes.fromhex('00'):  # 判断ACK命令
-                    print('ACK')
-                    return True
+        error_count = 0
+        while True:
+            if error_count >= 3:
+                print("达到重传上限 终止")
+                return False
+            rec = self.send(data)
+            if rec:  # 判断返回是否为空
+                print(rec)
+                if rec[1:3] == token:  # 判断token是否一致
+                    if rec[3:4] == bytes.fromhex('00'):  # 判断ACK命令
+                        print('ACK')
+                        return True
+                    else:
+                        print('NO ACK')
+                        return False
                 else:
-                    print('NO ACK')
+                    print("Step2 Token错误")
                     return False
             else:
-                print("Step2 Token错误")
-                return False
-        else:
-            print("Step1 返回值为空")
-            return False
+                print("Step1 返回值为空")
+                error_count = error_count + 1
 
     def random_token(self):
         while True:
