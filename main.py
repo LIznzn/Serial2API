@@ -1,4 +1,3 @@
-# coding=utf-8
 import getopt
 import sys
 import threading
@@ -6,7 +5,8 @@ import time
 import config
 
 import api
-from device import Device
+from tx_device import TX_Device
+from rx_device import RX_Device
 
 
 def main(argv):
@@ -22,15 +22,21 @@ def main(argv):
         elif key in ("-c", "--conf"):
             conf_path = value
 
-    serial_conf = config.parseConfig(conf_path, 'Serial')
-    device = Device(serial_conf)
+    tx_conf = config.parseConfig(conf_path, 'TX')
+    tx_device = TX_Device(tx_conf)
 
-    t = threading.Thread(target=device.run, args=())
-    t.setDaemon(True)
-    t.start()
+    tx = threading.Thread(target=tx_device.run, args=())
+    tx.setDaemon(True)
+    tx.start()
+
+    rx_conf = config.parseConfig(conf_path, 'RX')
+    rx_device = RX_Device(rx_conf)
+
+    rx = threading.Thread(target=rx_device.run, args=())
+    rx.setDaemon(True)
+    rx.start()
 
     server_conf = config.parseConfig(conf_path, 'Server')
-
     api.run(server_conf)
 
 

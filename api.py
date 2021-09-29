@@ -1,5 +1,5 @@
 from flask import Flask, request
-from device import Device
+from tx_device import Device
 import base64
 
 app = Flask(__name__)

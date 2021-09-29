@@ -2,7 +2,7 @@ from serial import *
 import base64
 
 
-class Device(object):
+class RX_Device(object):
     _instance = None
     _port = None
 

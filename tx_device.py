@@ -3,7 +3,7 @@ import threading
 from serial import *
 
 
-class Device(object):
+class TX_Device(object):
     _instance = None
     _port = None
     _lock = threading.Lock()
