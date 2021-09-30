@@ -45,7 +45,10 @@ class RX_Device(object):
                     if rec[6:7] == bytes.fromhex('00'):
                         fragment = False
                     fragment_order_buf = int.from_bytes(rec[7:9], byteorder='big')
-                    print("fragment_order", fragment_order_buf)
+                    if fragment:
+                        print("fragment_order", fragment_order_buf)
+                    else:
+                        print("last fragment")
                     data_buf_buf = rec[9:-3]
                     if fragment_order_buf is not fragment_order:
                         fragment_order = fragment_order_buf
