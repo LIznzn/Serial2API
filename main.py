@@ -30,6 +30,16 @@ def main(argv):
             tx_only = True
         elif key in ("-r", "--rx"):
             rx_only = True
+    if not tx_only:
+        logging.warning('Starting RX Thread...')
+
+        rx_conf = config.parseConfig(conf_path, 'RX')
+        rx_device = RX_Device(rx_conf)
+
+        rx = threading.Thread(target=rx_device.run, args=())
+        rx.setDaemon(True)
+        rx.start()
+
 
     if not rx_only:
         logging.warning('Starting TX Thread...')
@@ -41,20 +51,10 @@ def main(argv):
         tx.setDaemon(True)
         tx.start()
 
-    if not tx_only:
-        logging.warning('Starting RX Thread...')
+        logging.warning('Starting Server...')
 
-        rx_conf = config.parseConfig(conf_path, 'RX')
-        rx_device = RX_Device(rx_conf)
-
-        rx = threading.Thread(target=rx_device.run, args=())
-        rx.setDaemon(True)
-        rx.start()
-
-    logging.warning('Starting Server...')
-
-    server_conf = config.parseConfig(conf_path, 'Server')
-    api.run(server_conf)
+        server_conf = config.parseConfig(conf_path, 'Server')
+        api.run(server_conf)
 
 
 if __name__ == '__main__':
