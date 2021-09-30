@@ -30,6 +30,7 @@ def main(argv):
             tx_only = True
         elif key in ("-r", "--rx"):
             rx_only = True
+
     if not tx_only:
         logging.warning('Starting RX Thread...')
 
@@ -55,6 +56,12 @@ def main(argv):
 
         server_conf = config.parseConfig(conf_path, 'Server')
         api.run(server_conf)
+
+    if not tx_only:
+        rx.join()
+    if not rx_only:
+        tx.join()
+
 
 
 if __name__ == '__main__':
