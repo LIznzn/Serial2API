@@ -69,7 +69,7 @@ def post_send_img():
     if raw_length > 65535:
         return '发送: File too big'
     max_length = 225
-    device = Device(conf=None)
+    device = TX_Device(conf=None)
     if raw_length > max_length:
         fragment = True
         fragment_order = 0
@@ -105,7 +105,7 @@ def post_send_img():
 def post_send_test():
     get_data = request.files['file'].read()
     data = base64.b64encode(get_data)
-    device = Device(conf=None)
+    device = TX_Device(conf=None)
     str0 = bytes.fromhex('02') + bytes.fromhex('00') + data
     result = device.send_msg(str0)
 
