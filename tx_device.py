@@ -28,6 +28,7 @@ class TX_Device(object):
                       timeout=float(conf['timeout']))
         port.flush()
         self._port = port
+        # 测试方法
         # self.test()
 
     # 原生发送带线程锁

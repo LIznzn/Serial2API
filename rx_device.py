@@ -19,12 +19,11 @@ class RX_Device(object):
         conf = self._conf
         print("配置文件:", conf)
         port = Serial(conf['device'],
-                     baudrate=conf['baudrate'],
-                     bytesize=int(conf['bytesize']),
-                     parity=conf['parity'],
-                     stopbits=int(conf['stopbits']))
+                      baudrate=conf['baudrate'],
+                      bytesize=int(conf['bytesize']),
+                      parity=conf['parity'],
+                      stopbits=int(conf['stopbits']))
         self._port = port
-
 
         while True:
             data_buf = b''
@@ -32,10 +31,10 @@ class RX_Device(object):
             fragment_order = -1
             fragment = False
             rec = port.read_until(expected=bytes.fromhex('FBFBFB'))
-            str = bytes.fromhex('01')+rec[1:3]+bytes.fromhex('00')+bytes.fromhex('FBFBFB')
-            self.send(str)
+            data_str = bytes.fromhex('01') + rec[1:3] + bytes.fromhex('00') + bytes.fromhex('FBFBFB')
+            self.send(data_str)
             # print("raw msg:",rec)
-            if rec[6:7] ==  bytes.fromhex('01'):
+            if rec[6:7] == bytes.fromhex('01'):
                 fragment = True
                 print("fragmented")
 
@@ -46,25 +45,25 @@ class RX_Device(object):
                     if rec[6:7] == bytes.fromhex('00'):
                         fragment = False
                     fragment_order_buf = int.from_bytes(rec[7:9], byteorder='big')
-                    print("fragment_order",fragment_order_buf)
+                    print("fragment_order", fragment_order_buf)
                     data_buf_buf = rec[9:-3]
                     if fragment_order_buf is not fragment_order:
                         fragment_order = fragment_order_buf
-                        print('test',data_buf_buf)
+                        print('test', data_buf_buf)
                         data_buf += data_buf_buf
                     if fragment:
                         rec = port.read_until(expected=bytes.fromhex('FBFBFB'))
-                        str = bytes.fromhex('01')+rec[1:3]+bytes.fromhex('00')+bytes.fromhex('FBFBFB')
-                        self.send(str)
+                        data_str = bytes.fromhex('01') + rec[1:3] + bytes.fromhex('00') + bytes.fromhex('FBFBFB')
+                        self.send(data_str)
 
                 print(data_buf)
-                f = open("sample.bin","wb")
+                # 存储收到的信息
+                # TODO: 访问API上传结果信息
+                f = open("sample.bin", "wb")
                 f.write(base64.b64decode(data_buf))
                 f.close()
             else:
                 print(rec[7:-3].decode("utf-8"))
-
-
 
     def send(self, data):
         port = self._port

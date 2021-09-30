@@ -1,40 +1,57 @@
 import getopt
 import sys
 import threading
-import time
 import config
 
 import api
 from tx_device import TX_Device
 from rx_device import RX_Device
 
+import logging
+
 
 def main(argv):
     conf_path = 'config.ini'
+    tx_only = False
+    rx_only = False
 
-    optlist, args = getopt.getopt(argv, 'hc:', ['help', 'conf='])
+    optlist, args = getopt.getopt(argv, 'hc:tr', ['help', 'conf=', 'tx', 'rx'])
     for key, value in optlist:
         if key in ("-h", "--help"):
             print("Usage: python main.py [OPTION]\n"
                   "-h, --help       \tPrint this help\n"
-                  "-c, --conf=<file>\tLoad configurations from file""")
+                  "-c, --conf=<file>\tLoad configurations from file\n"
+                  "-t, --tx         \tRun TX only\n"
+                  "-r, --rx         \tRun RX only\n")
             exit()
         elif key in ("-c", "--conf"):
             conf_path = value
+        elif key in ("-t", "--tx"):
+            tx_only = True
+        elif key in ("-r", "--rx"):
+            rx_only = True
 
-    tx_conf = config.parseConfig(conf_path, 'TX')
-    tx_device = TX_Device(tx_conf)
+    if not rx_only:
+        logging.warning('Starting TX Thread...')
 
-    tx = threading.Thread(target=tx_device.run, args=())
-    tx.setDaemon(True)
-    tx.start()
+        tx_conf = config.parseConfig(conf_path, 'TX')
+        tx_device = TX_Device(tx_conf)
 
-    rx_conf = config.parseConfig(conf_path, 'RX')
-    rx_device = RX_Device(rx_conf)
+        tx = threading.Thread(target=tx_device.run, args=())
+        tx.setDaemon(True)
+        tx.start()
 
-    rx = threading.Thread(target=rx_device.run, args=())
-    rx.setDaemon(True)
-    rx.start()
+    if not tx_only:
+        logging.warning('Starting RX Thread...')
+
+        rx_conf = config.parseConfig(conf_path, 'RX')
+        rx_device = RX_Device(rx_conf)
+
+        rx = threading.Thread(target=rx_device.run, args=())
+        rx.setDaemon(True)
+        rx.start()
+
+    logging.warning('Starting Server...')
 
     server_conf = config.parseConfig(conf_path, 'Server')
     api.run(server_conf)

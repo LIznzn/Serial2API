@@ -1,5 +1,5 @@
 from flask import Flask, request
-from tx_device import Device
+from tx_device import TX_Device
 import base64
 
 app = Flask(__name__)
@@ -14,8 +14,7 @@ def run(conf):
 
 @app.route('/status', methods=['GET'])
 def get_status():
-
-    return "系统状态: 不知道"
+    return "系统状态: 还没做"
 
 
 @app.route('/send', methods=['POST'])
@@ -27,20 +26,22 @@ def post_send():
     if raw_length > 65535:
         return '发送: Message too long'
     max_length = 225
-    device = Device(conf=None)
+    device = TX_Device(conf=None)
     if raw_length > max_length:
         fragment = True
         fragment_order = 0
         while fragment:
             frag = data[0:max_length]
             data = data[max_length:]
-            str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
+            str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex(
+                '01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
             result = device.send_msg(str0)
             if result is not True:
                 break
             if len(data) <= max_length:
                 fragment = False
-                str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + fragment_order.to_bytes(length=2, byteorder='big') + data
+                str0 = bytes.fromhex('01') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex(
+                    '00') + fragment_order.to_bytes(length=2, byteorder='big') + data
                 result = device.send_msg(str0)
                 if result is not True:
                     break
@@ -63,7 +64,7 @@ def post_send_img():
     result = None
     data = base64.b64encode(get_data)
     print(data)
-    #data = get_data
+    # data = get_data
     raw_length = len(data)
     if raw_length > 65535:
         return '发送: File too big'
@@ -75,13 +76,15 @@ def post_send_img():
         while fragment:
             frag = data[0:max_length]
             data = data[max_length:]
-            str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
+            str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex(
+                '01') + fragment_order.to_bytes(length=2, byteorder='big') + frag
             result = device.send_msg(str0)
             if result is not True:
                 break
             if len(data) <= max_length:
                 fragment = False
-                str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + fragment_order.to_bytes(length=2, byteorder='big') + data
+                str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex(
+                    '00') + fragment_order.to_bytes(length=2, byteorder='big') + data
                 result = device.send_msg(str0)
                 if result is not True:
                     break
