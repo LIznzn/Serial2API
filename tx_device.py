@@ -7,6 +7,7 @@ class TX_Device(object):
     _instance = None
     _port = None
     _lock = threading.Lock()
+    _attempt = 3
 
     def __init__(self, conf):
         self._conf = conf
@@ -19,17 +20,17 @@ class TX_Device(object):
 
     def run(self):
         conf = self._conf
-        print("配置文件:", conf)
+        print("Config:", conf)
         port = Serial(conf['device'],
                       baudrate=conf['baudrate'],
                       bytesize=int(conf['bytesize']),
                       parity=conf['parity'],
                       stopbits=int(conf['stopbits']),
                       timeout=float(conf['timeout']))
+
         port.flush()
         self._port = port
-        # 测试方法
-        # self.test()
+        self._attempt = int(conf['attempt'])
 
     # 原生发送带线程锁
     def send(self, data):
@@ -48,9 +49,10 @@ class TX_Device(object):
         print(data)
         error_count = 0
         while True:
-            if error_count >= 3:
+            if error_count >= self._attempt:
                 print("达到重传上限 终止")
                 return False
+
             rec = self.send(data)
             if rec:  # 判断返回是否为空
                 print(rec)
@@ -67,19 +69,12 @@ class TX_Device(object):
             else:
                 print("Step1 返回值为空")
                 error_count = error_count + 1
+                print("重传了!")
 
     def random_token(self):
-        while True:
-            token = os.urandom(2)
-            if token.find(b"\n") == -1:  # 防止出现换行符
-                return token
-
-    def test(self):
-        count = 1
-        str1 = "Hello Lora!"
-        while True:
-            str0 = bytes.fromhex('01') + bytes(str1 + str(count) + "\n", 'utf-8')
-            print(str0)
-            print("Test Result:" + str(self.send_msg(str0)))
-            time.sleep(1)
-            count = count + 1
+        # while True:
+        #     token = os.urandom(2)
+        #     if token.find(b"\n") == -1:  # 防止出现换行符
+        #         return token
+        token = os.urandom(2)
+        return token

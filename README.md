@@ -5,9 +5,9 @@ Serial2API
 
 #### Header
 
-| 版本 | Token | CMD | 数据长度 | TAG | 分片顺序 | 数据 |
-| ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| 01 | FFFF | 00 | FFFF | 00 | FFFF | 123456789ABCDEF
+| 版本 | Token | CMD | 数据长度 | TAG | 分片顺序 | Payload Checksum | Payload |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 01 | FFFF | 00 | FFFF | 00 | FFFF | FFFF | 123456789ABCDEF
 
 #### CMD
 

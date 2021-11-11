@@ -17,7 +17,7 @@ class RX_Device(object):
 
     def run(self):
         conf = self._conf
-        print("配置文件:", conf)
+        print("Config:", conf)
         port = Serial(conf['device'],
                       baudrate=conf['baudrate'],
                       bytesize=int(conf['bytesize']),
@@ -33,7 +33,6 @@ class RX_Device(object):
             rec = port.read_until(expected=bytes.fromhex('FBFBFB'))
             data_str = bytes.fromhex('01') + rec[1:3] + bytes.fromhex('00') + bytes.fromhex('FBFBFB')
             self.send(data_str)
-            # print("raw msg:",rec)
             if rec[6:7] == bytes.fromhex('01'):
                 fragment = True
                 print("fragmented")
@@ -52,19 +51,20 @@ class RX_Device(object):
                     data_buf_buf = rec[9:-3]
                     if fragment_order_buf is not fragment_order:
                         fragment_order = fragment_order_buf
-                        print('test', data_buf_buf)
+                        # print('test', data_buf_buf)
                         data_buf += data_buf_buf
                     if fragment:
                         rec = port.read_until(expected=bytes.fromhex('FBFBFB'))
                         data_str = bytes.fromhex('01') + rec[1:3] + bytes.fromhex('00') + bytes.fromhex('FBFBFB')
                         self.send(data_str)
 
-                print(data_buf)
+                # print(data_buf)
                 # 存储收到的信息
                 # TODO: 访问API上传结果信息
                 f = open("sample.bin", "wb")
                 f.write(base64.b64decode(data_buf))
                 f.close()
+                print("finished")
             else:
                 print(rec[7:-3].decode("utf-8"))
 

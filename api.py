@@ -90,7 +90,6 @@ def post_send_img():
                     break
             print(fragment_order)
             fragment_order = fragment_order + 1
-
     else:
         str0 = bytes.fromhex('02') + raw_length.to_bytes(length=2, byteorder='big') + bytes.fromhex('00') + data
         result = device.send_msg(str0)
