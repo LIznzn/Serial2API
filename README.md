@@ -14,8 +14,8 @@ Serial2API
 | CMD |  | 
 | ---- | ---- | 
 | 00 | ACK | 
-| 01 | Message | 
-| 02 | Image | 
+| 01 | Text Message | 
+| 02 | Binary Message | 
 | FF | RST | 
 
 #### TAG
