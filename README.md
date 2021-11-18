@@ -1,17 +1,17 @@
 Serial2API
 ====================
 
-### 协议
+### Protocol
 
 #### Header
 
-| 版本 | Token | CMD | 数据长度 | TAG | 分片顺序 | Payload Checksum | Payload |
+| Version | Token | CMD | Payload Length | TAG | Fragment Order | Payload Checksum | Payload |
 | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | 01 | FFFF | 00 | FFFF | 00 | FFFF | FFFF | 123456789ABCDEF
 
 #### CMD
 
-| CMD | 信息 | 
+| CMD |  | 
 | ---- | ---- | 
 | 00 | ACK | 
 | 01 | Message | 
@@ -20,15 +20,15 @@ Serial2API
 
 #### TAG
 
-| TAG | 信息 | 
+| TAG |  | 
 | ---- | ---- | 
 | 00 | 无下一分片 | 
 | 01 | 有下一分片 |
 
-#### 数据长度
+#### Payload Length
 
-最大65535字节
+Maximum 65535 Bytes
 
-#### 分片顺序
+#### Fragment Order
 
-最大65536个分片
+Maximum 65536 Fragments

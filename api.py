@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 
 def run(conf):
-    print("配置文件:", conf)
+    print("API Server Conf:", conf)
     app.run(host=conf['ip'],
             port=conf['port'],
             debug=conf['debug'])

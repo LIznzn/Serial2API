@@ -64,12 +64,12 @@ class TX_Device(object):
                         print('NO ACK')
                         return False
                 else:
-                    print("Step2 Token错误")
+                    print("Token Error")
                     return False
             else:
-                print("Step1 返回值为空")
+                print("Null Error")
                 error_count = error_count + 1
-                print("重传了!")
+                print("Retransmission Triggered")
 
     def random_token(self):
         # while True:
