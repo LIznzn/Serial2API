@@ -1,9 +1,9 @@
 import getopt
 import sys
 import threading
-import config
 
 import api
+import utils
 from tx_device import TX_Device
 from rx_device import RX_Device
 
@@ -34,7 +34,7 @@ def main(argv):
     if not tx_only:
         logging.warning('Starting RX Thread...')
 
-        rx_conf = config.parseConfig(conf_path, 'RX')
+        rx_conf = utils.parseConfig(conf_path, 'RX')
         rx_device = RX_Device(rx_conf)
 
         rx = threading.Thread(target=rx_device.run, args=())
@@ -45,7 +45,7 @@ def main(argv):
     if not rx_only:
         logging.warning('Starting TX Thread...')
 
-        tx_conf = config.parseConfig(conf_path, 'TX')
+        tx_conf = utils.parseConfig(conf_path, 'TX')
         tx_device = TX_Device(tx_conf)
 
         tx = threading.Thread(target=tx_device.run, args=())
@@ -54,7 +54,7 @@ def main(argv):
 
         logging.warning('Starting Server...')
 
-        server_conf = config.parseConfig(conf_path, 'Server')
+        server_conf = utils.parseConfig(conf_path, 'Server')
         api.run(server_conf)
 
     if not tx_only:

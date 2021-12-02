@@ -11,7 +11,7 @@ Serial2API
 
 #### CMD
 
-| CMD |  | 
+| Bit | Information | 
 | ---- | ---- | 
 | 00 | ACK | 
 | 01 | Text Message | 
@@ -20,7 +20,7 @@ Serial2API
 
 #### TAG
 
-| TAG |  | 
+| Bit | Information | 
 | ---- | ---- | 
 | 00 | 无下一分片 | 
 | 01 | 有下一分片 |
