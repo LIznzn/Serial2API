@@ -1,5 +1,29 @@
 Serial2API
 ====================
+### Config
+```
+[TX]
+device = /dev/tty.usbserial-1430
+baudrate = 9600
+bytesize = 8
+parity = N
+stopbits = 1
+timeout = 5.0
+attempt = 10
+
+[RX]
+device = /dev/tty.usbserial-1430
+baudrate = 9600
+bytesize = 8
+parity = N
+stopbits = 1
+timeout = 5.0
+
+[Server]
+ip = 0.0.0.0
+port = 5000
+debug = True
+```
 
 ### Protocol
 
