@@ -1,9 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from tx_device import TX_Device
 import base64
 
-app = Flask(__name__)
-
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 def run(conf):
     print("API Server Conf:", conf)
@@ -12,9 +11,16 @@ def run(conf):
             debug=conf['debug'])
 
 
+@app.route('/', methods=['GET'])
+def get_index():
+    return render_template("index.html")
+
 @app.route('/status', methods=['GET'])
 def get_status():
-    return "系统状态: 还没做"
+    f = open("serial2api.log")
+    lines = f.read()
+    output = lines.replace('\n', '<br>')
+    return render_template('status.html', log_file=output)
 
 
 @app.route('/send', methods=['POST'])

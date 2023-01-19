@@ -15,6 +15,16 @@ def main(argv):
     tx_only = False
     rx_only = False
 
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     filename='serial2api.log',
+    #                     filemode='a',
+    #                     format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
+    logging.basicConfig(level=logging.DEBUG,
+                        filename='serial2api.log',
+                        filemode='w',
+                        format='%(levelname)s: %(message)s')
+
     optlist, args = getopt.getopt(argv, 'hc:tr', ['help', 'conf=', 'tx', 'rx'])
     for key, value in optlist:
         if key in ("-h", "--help"):

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" class="h-100" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %} - MM-LPWAN/Serial2API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+    {% block stylesheet %}{% endblock %}
+    <style>
+        main > .container {
+            padding: 60px 15px 0;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column h-100">
+{% block header %}
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Serial2API</a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">© 2021-2023 Wenxin Li<br>This is a part of MM-LPWAN project.</span>
+        </div>
+    </footer>
+{% endblock %}
+<script src="{{ url_for('static', filename='jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap.bundle.js') }}"></script>
+{% block script %}{% endblock %}
+</body>
+</html>
